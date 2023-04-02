@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Movie DB</string>
+    <string name="title_movie">Movie</string>
+    <string name="title_review">Reviews</string>
+    <string name="data_empty">Data is empty</string>
+    <string name="backdrop_image_desc">Backdrop image desc</string>
+    <string name="poster_image_dsc">Poster image dsc</string>
+    <string name="language">Language</string>
+    <string name="overview">Overview</string>
+    <string name="videos">Videos</string>
+    <string name="reviews">Reviews</string>
+    <string name="thumbnail_image_trailer_desc">Thumbnail image trailer desc</string>
+    <string name="play_image_desc">Play image desc</string>
+    <string name="author_image_desc">Author image desc</string>
+    <string name="release_date">Release Date</string>
+    <string name="votes">votes</string>
+    <string name="load_more">Load More >></string>
+</resources>
