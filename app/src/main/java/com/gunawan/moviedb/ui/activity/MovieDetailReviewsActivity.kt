@@ -2,6 +2,7 @@ package com.gunawan.moviedb.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -23,7 +24,8 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
     private lateinit var listReviews: MutableList<ResultMovieReviewsItem>
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private val movieViewModel: MovieViewModel by viewModels()
-    private var page: Int               = 1
+    private var currentPage: Int        = 1
+    private var tempCurrentPage: Int    = 1
     private var totalPage: Int          = 1
     private var movieId: Int            = 0
     private var isLoadMore: Boolean     = false
@@ -45,14 +47,14 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
             finish()
         }
 
-        getMovieDetailReviews(movieId, page)
+        getMovieDetailReviews()
         getMovieDetailReviewsMsg()
     }
 
-    private fun getMovieDetailReviews(movieId: Int, page: Int) {
+    private fun getMovieDetailReviews() {
         movieViewModel.ldGetMovieDetailReviews  = MutableLiveData()
         movieViewModel.ldMsg                    = MutableLiveData()
-        movieViewModel.getMovieDetailReviews(movieId, page)
+        movieViewModel.getMovieDetailReviews(movieId, currentPage)
         movieViewModel.ldGetMovieDetailReviews.observe(this) {
             if (it != null) {
                 binding.pbLoading.visibility        = View.GONE
@@ -91,7 +93,7 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
                             val firstVisibleItemPosition: Int   = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                             if (!isLoadMore) {
                                 if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
-                                    if (page < totalPage) {
+                                    if (currentPage < totalPage) {
                                         loadMoreData()
                                         getLoadMoreMsg()
                                     }
@@ -99,18 +101,6 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
                             }
                         }
                     })
-
-//                    mLayoutManager = LinearLayoutManager(this)
-//                    scrollListener = RecyclerViewLoadMoreScroll(mLayoutManager as LinearLayoutManager)
-//                    scrollListener.setOnLoadMoreListener(object :
-//                        RecyclerViewLoadMoreScroll.OnLoadMoreListener {
-//                        override fun onLoadMore() {
-//                            if (page < totalPage) {
-//                                loadMoreData()
-//                            }
-//                        }
-//                    })
-//                    binding.rvReview.addOnScrollListener(scrollListener)
                 } else {
                     Toast.makeText(this, getString(R.string.data_empty), Toast.LENGTH_SHORT).show()
                 }
@@ -131,12 +121,13 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
     }
 
     private fun loadMoreData() {
-        page += 1
+        tempCurrentPage = currentPage
+        currentPage += 1
         isLoadMore = true
         movieReviewsAdapter.addLoadingView()
         movieViewModel.ldGetMovieDetailReviews  = MutableLiveData()
         movieViewModel.ldMsg                    = MutableLiveData()
-        movieViewModel.getMovieDetailReviews(movieId, page)
+        movieViewModel.getMovieDetailReviews(movieId, currentPage)
         movieViewModel.ldGetMovieDetailReviews.observe(this) {
             movieReviewsAdapter.removeLoadingView()
             isLoadMore = false
@@ -166,12 +157,14 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
             binding.rvReview.post {
                 movieReviewsAdapter.notifyDataSetChanged()
             }
+
+
         }
     }
 
     private fun getLoadMoreMsg() {
         movieViewModel.ldMsg.observe(this) {
-            page -= 1
+            currentPage = tempCurrentPage
             movieReviewsAdapter.removeLoadingView()
             isLoadMore = false
         }

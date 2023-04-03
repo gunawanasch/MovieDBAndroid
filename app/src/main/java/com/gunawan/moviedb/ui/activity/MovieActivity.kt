@@ -23,7 +23,8 @@ class MovieActivity : AppCompatActivity() {
     private lateinit var listMovie: MutableList<ResultMovieItem>
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private val movieViewModel: MovieViewModel by viewModels()
-    private var page: Int               = 1
+    private var currentPage: Int        = 1
+    private var tempCurrentPage: Int    = 1
     private var totalPage: Int          = 1
     private var genreId: Int            = 0
     private var genreName: String       = ""
@@ -47,14 +48,14 @@ class MovieActivity : AppCompatActivity() {
             finish()
         }
 
-        getMovie(genreId, page)
+        getMovie()
         getMovieMsg()
     }
 
-    private fun getMovie(genreId: Int, page: Int) {
+    private fun getMovie() {
         movieViewModel.ldGetMovie   = MutableLiveData()
         movieViewModel.ldMsg        = MutableLiveData()
-        movieViewModel.getMovie(genreId, page)
+        movieViewModel.getMovie(genreId, currentPage)
         movieViewModel.ldGetMovie.observe(this) {
             if (it != null) {
                 binding.pbLoading.visibility        = View.GONE
@@ -88,7 +89,7 @@ class MovieActivity : AppCompatActivity() {
                             val firstVisibleItemPosition: Int   = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                             if (!isLoadMore) {
                                 if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
-                                    if (page < totalPage) {
+                                    if (currentPage < totalPage) {
                                         loadMoreData()
                                         getLoadMoreMsg()
                                     }
@@ -116,12 +117,13 @@ class MovieActivity : AppCompatActivity() {
     }
 
     private fun loadMoreData() {
-        page += 1
+        tempCurrentPage = currentPage
+        currentPage += 1
         isLoadMore = true
         movieAdapter.addLoadingView()
         movieViewModel.ldGetMovie   = MutableLiveData()
         movieViewModel.ldMsg        = MutableLiveData()
-        movieViewModel.getMovie(genreId, page)
+        movieViewModel.getMovie(genreId, currentPage)
         movieViewModel.ldGetMovie.observe(this) {
             movieAdapter.removeLoadingView()
             isLoadMore = false
@@ -143,7 +145,7 @@ class MovieActivity : AppCompatActivity() {
 
     private fun getLoadMoreMsg() {
         movieViewModel.ldMsg.observe(this) {
-            page -= 1
+            currentPage = tempCurrentPage
             movieAdapter.removeLoadingView()
             isLoadMore = false
         }
