@@ -13,7 +13,6 @@ import com.gunawan.moviedb.databinding.ActivityMovieDetailReviewsBinding
 import com.gunawan.moviedb.repository.model.AuthorReviewDetails
 import com.gunawan.moviedb.repository.model.ResultMovieReviewsItem
 import com.gunawan.moviedb.ui.adapter.MovieReviewsAdapter
-import com.gunawan.moviedb.utils.RecyclerViewLoadMoreScroll
 import com.gunawan.moviedb.viewmodel.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,12 +21,12 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMovieDetailReviewsBinding
     private lateinit var movieReviewsAdapter: MovieReviewsAdapter
     private lateinit var listReviews: MutableList<ResultMovieReviewsItem>
-    private lateinit var scrollListener: RecyclerViewLoadMoreScroll
-    private lateinit var mLayoutManager: RecyclerView.LayoutManager
+    private lateinit var layoutManager: RecyclerView.LayoutManager
     private val movieViewModel: MovieViewModel by viewModels()
-    private var page: Int       = 1
-    private var totalPage: Int  = 1
-    private var movieId: Int    = 0
+    private var page: Int               = 1
+    private var totalPage: Int          = 1
+    private var movieId: Int            = 0
+    private var isLoadMore: Boolean     = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,22 +78,39 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
                     }
 
                     movieReviewsAdapter = MovieReviewsAdapter(listReviews.toMutableList())
-                    mLayoutManager = LinearLayoutManager(this)
-                    binding.rvReview.layoutManager = mLayoutManager
+                    layoutManager = LinearLayoutManager(this)
+                    binding.rvReview.layoutManager = layoutManager
                     binding.rvReview.setHasFixedSize(true)
                     binding.rvReview.adapter = movieReviewsAdapter
 
-                    mLayoutManager = LinearLayoutManager(this)
-                    scrollListener = RecyclerViewLoadMoreScroll(mLayoutManager as LinearLayoutManager)
-                    scrollListener.setOnLoadMoreListener(object :
-                        RecyclerViewLoadMoreScroll.OnLoadMoreListener {
-                        override fun onLoadMore() {
-                            if (page < totalPage) {
-                                loadMoreData()
+                    binding.rvReview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                            super.onScrolled(recyclerView, dx, dy)
+                            val visibleItemCount: Int           = layoutManager.childCount
+                            val totalItemCount: Int             = layoutManager.itemCount
+                            val firstVisibleItemPosition: Int   = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                            if (!isLoadMore) {
+                                if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                                    if (page < totalPage) {
+                                        loadMoreData()
+                                        getLoadMoreMsg()
+                                    }
+                                }
                             }
                         }
                     })
-                    binding.rvReview.addOnScrollListener(scrollListener)
+
+//                    mLayoutManager = LinearLayoutManager(this)
+//                    scrollListener = RecyclerViewLoadMoreScroll(mLayoutManager as LinearLayoutManager)
+//                    scrollListener.setOnLoadMoreListener(object :
+//                        RecyclerViewLoadMoreScroll.OnLoadMoreListener {
+//                        override fun onLoadMore() {
+//                            if (page < totalPage) {
+//                                loadMoreData()
+//                            }
+//                        }
+//                    })
+//                    binding.rvReview.addOnScrollListener(scrollListener)
                 } else {
                     Toast.makeText(this, getString(R.string.data_empty), Toast.LENGTH_SHORT).show()
                 }
@@ -116,13 +132,14 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
 
     private fun loadMoreData() {
         page += 1
+        isLoadMore = true
         movieReviewsAdapter.addLoadingView()
         movieViewModel.ldGetMovieDetailReviews  = MutableLiveData()
         movieViewModel.ldMsg                    = MutableLiveData()
         movieViewModel.getMovieDetailReviews(movieId, page)
         movieViewModel.ldGetMovieDetailReviews.observe(this) {
             movieReviewsAdapter.removeLoadingView()
-            scrollListener.setLoaded()
+            isLoadMore = false
 
             if (it != null) {
                 if (!it.results.isNullOrEmpty()) {
@@ -149,6 +166,14 @@ class MovieDetailReviewsActivity : AppCompatActivity() {
             binding.rvReview.post {
                 movieReviewsAdapter.notifyDataSetChanged()
             }
+        }
+    }
+
+    private fun getLoadMoreMsg() {
+        movieViewModel.ldMsg.observe(this) {
+            page -= 1
+            movieReviewsAdapter.removeLoadingView()
+            isLoadMore = false
         }
     }
 

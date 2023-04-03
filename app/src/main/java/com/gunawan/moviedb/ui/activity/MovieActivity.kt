@@ -13,7 +13,6 @@ import com.gunawan.moviedb.R
 import com.gunawan.moviedb.databinding.ActivityMovieBinding
 import com.gunawan.moviedb.repository.model.ResultMovieItem
 import com.gunawan.moviedb.ui.adapter.MovieAdapter
-import com.gunawan.moviedb.utils.RecyclerViewLoadMoreScroll
 import com.gunawan.moviedb.viewmodel.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,13 +21,13 @@ class MovieActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMovieBinding
     private lateinit var movieAdapter: MovieAdapter
     private lateinit var listMovie: MutableList<ResultMovieItem>
-    private lateinit var scrollListener: RecyclerViewLoadMoreScroll
-    private lateinit var mLayoutManager: RecyclerView.LayoutManager
+    private lateinit var layoutManager: RecyclerView.LayoutManager
     private val movieViewModel: MovieViewModel by viewModels()
-    private var page: Int           = 1
-    private var totalPage: Int      = 1
-    private var genreId: Int        = 0
-    private var genreName: String   = ""
+    private var page: Int               = 1
+    private var totalPage: Int          = 1
+    private var genreId: Int            = 0
+    private var genreName: String       = ""
+    private var isLoadMore: Boolean     = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,9 +65,10 @@ class MovieActivity : AppCompatActivity() {
                     for (i in it.results.indices) {
                         listMovie.add(it.results[i]!!)
                     }
+
                     movieAdapter = MovieAdapter(listMovie.toMutableList())
-                    mLayoutManager = LinearLayoutManager(this)
-                    binding.rvMovie.layoutManager = mLayoutManager
+                    layoutManager = LinearLayoutManager(this)
+                    binding.rvMovie.layoutManager = layoutManager
                     binding.rvMovie.setHasFixedSize(true)
                     binding.rvMovie.adapter = movieAdapter
                     movieAdapter.setOnCustomClickListener(object : MovieAdapter.OnCustomClickListener {
@@ -80,17 +80,22 @@ class MovieActivity : AppCompatActivity() {
 
                     })
 
-                    mLayoutManager = LinearLayoutManager(this)
-                    scrollListener = RecyclerViewLoadMoreScroll(mLayoutManager as LinearLayoutManager)
-                    scrollListener.setOnLoadMoreListener(object :
-                        RecyclerViewLoadMoreScroll.OnLoadMoreListener {
-                        override fun onLoadMore() {
-                            if (page < totalPage) {
-                                loadMoreData()
+                    binding.rvMovie.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                            super.onScrolled(recyclerView, dx, dy)
+                            val visibleItemCount: Int           = layoutManager.childCount
+                            val totalItemCount: Int             = layoutManager.itemCount
+                            val firstVisibleItemPosition: Int   = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                            if (!isLoadMore) {
+                                if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                                    if (page < totalPage) {
+                                        loadMoreData()
+                                        getLoadMoreMsg()
+                                    }
+                                }
                             }
                         }
                     })
-                    binding.rvMovie.addOnScrollListener(scrollListener)
                 } else {
                     Toast.makeText(this, getString(R.string.data_empty), Toast.LENGTH_SHORT).show()
                 }
@@ -112,13 +117,14 @@ class MovieActivity : AppCompatActivity() {
 
     private fun loadMoreData() {
         page += 1
+        isLoadMore = true
         movieAdapter.addLoadingView()
         movieViewModel.ldGetMovie   = MutableLiveData()
         movieViewModel.ldMsg        = MutableLiveData()
         movieViewModel.getMovie(genreId, page)
         movieViewModel.ldGetMovie.observe(this) {
             movieAdapter.removeLoadingView()
-            scrollListener.setLoaded()
+            isLoadMore = false
 
             if (it != null) {
                 if (!it.results.isNullOrEmpty()) {
@@ -132,6 +138,14 @@ class MovieActivity : AppCompatActivity() {
             binding.rvMovie.post {
                 movieAdapter.notifyDataSetChanged()
             }
+        }
+    }
+
+    private fun getLoadMoreMsg() {
+        movieViewModel.ldMsg.observe(this) {
+            page -= 1
+            movieAdapter.removeLoadingView()
+            isLoadMore = false
         }
     }
 
