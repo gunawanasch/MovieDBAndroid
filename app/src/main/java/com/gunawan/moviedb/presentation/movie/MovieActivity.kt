@@ -1,4 +1,4 @@
-package com.gunawan.moviedb.presentation.ui.movie
+package com.gunawan.moviedb.presentation.movie
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gunawan.moviedb.R
 import com.gunawan.moviedb.databinding.ActivityMovieBinding
 import com.gunawan.moviedb.domain.entities.ResultMovieItem
-import com.gunawan.moviedb.presentation.ui.movie_detail.MovieDetailActivity
+import com.gunawan.moviedb.presentation.movie_detail.MovieDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -80,7 +80,8 @@ class MovieActivity : AppCompatActivity() {
                             binding.rvMovie.layoutManager = layoutManager
                             binding.rvMovie.setHasFixedSize(true)
                             binding.rvMovie.adapter = movieAdapter
-                            movieAdapter.setOnCustomClickListener(object : MovieAdapter.OnCustomClickListener {
+                            movieAdapter.setOnCustomClickListener(object :
+                                MovieAdapter.OnCustomClickListener {
                                 override fun onItemClicked(resultMovieItem: ResultMovieItem) {
                                     intent = Intent(this@MovieActivity, MovieDetailActivity::class.java)
                                     intent.putExtra("movieId", resultMovieItem.id)

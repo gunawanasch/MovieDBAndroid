@@ -18,16 +18,16 @@
         android:theme="@style/Theme.MovieDBAndroid"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.ui.movie_detail_reviews.MovieDetailReviewsActivity"
+            android:name=".presentation.movie_detail_reviews.MovieDetailReviewsActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.ui.movie_detail.MovieDetailActivity"
+            android:name=".presentation.movie_detail.MovieDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.ui.movie.MovieActivity"
+            android:name=".presentation.movie.MovieActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.ui.main.MainActivity"
+            android:name=".presentation.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

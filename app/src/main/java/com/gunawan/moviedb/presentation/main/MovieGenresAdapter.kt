@@ -1,4 +1,4 @@
-package com.gunawan.moviedb.presentation.ui.main
+package com.gunawan.moviedb.presentation.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

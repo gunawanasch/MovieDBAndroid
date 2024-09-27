@@ -1,4 +1,4 @@
-package com.gunawan.moviedb.presentation.ui.movie_detail_reviews
+package com.gunawan.moviedb.presentation.movie_detail_reviews
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,10 +27,18 @@ class MovieDetailReviewsViewModel @Inject constructor(
                         mldMovieDetailReviewsState.postValue(MovieDetailReviewsUIState.Loading)
                     }
                     is NetworkResponseState.Success -> {
-                        mldMovieDetailReviewsState.postValue(MovieDetailReviewsUIState.Success(response.result))
+                        mldMovieDetailReviewsState.postValue(
+                            MovieDetailReviewsUIState.Success(
+                                response.result
+                            )
+                        )
                     }
                     is NetworkResponseState.Error -> {
-                        mldMovieDetailReviewsState.postValue(MovieDetailReviewsUIState.Error(response.exception.toString()))
+                        mldMovieDetailReviewsState.postValue(
+                            MovieDetailReviewsUIState.Error(
+                                response.exception.toString()
+                            )
+                        )
                     }
                 }
             }

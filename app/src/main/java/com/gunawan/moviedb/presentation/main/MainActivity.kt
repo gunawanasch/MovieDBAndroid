@@ -1,4 +1,4 @@
-package com.gunawan.moviedb.presentation.ui.main
+package com.gunawan.moviedb.presentation.main
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gunawan.moviedb.R
 import com.gunawan.moviedb.databinding.ActivityMainBinding
 import com.gunawan.moviedb.domain.entities.GenresItem
-import com.gunawan.moviedb.presentation.ui.movie.MovieActivity
+import com.gunawan.moviedb.presentation.movie.MovieActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

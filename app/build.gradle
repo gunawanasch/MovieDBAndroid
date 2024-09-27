@@ -52,9 +52,9 @@ ext {
             okhttp          : '4.12.0',
             rxAndroid       : '2.1.0',
             glide           : '4.11.0',
-            junit           : '4.12',
-            extjunit        : '1.1.3',
-            espresso        : '3.4.0'
+            junit           : '4.13.2',
+            extjunit        : '1.2.1',
+            espresso        : '3.6.1'
     ]
 }
 
@@ -85,6 +85,13 @@ dependencies {
     kapt 'androidx.room:room-compiler:' + versions.room
     kapt 'com.github.bumptech.glide:compiler:' + versions.glide
 
+    implementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation "com.squareup.okhttp3:mockwebserver:4.10.0"
+    testImplementation "com.google.truth:truth:1.1.3"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
+    testImplementation "org.mockito:mockito-inline:3.0.0"
+    testImplementation 'app.cash.turbine:turbine:0.12.1'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"
     testImplementation 'junit:junit:' + versions.junit
     androidTestImplementation 'androidx.test.ext:junit:' + versions.extjunit
     androidTestImplementation 'androidx.test.espresso:espresso-core:' + versions.espresso

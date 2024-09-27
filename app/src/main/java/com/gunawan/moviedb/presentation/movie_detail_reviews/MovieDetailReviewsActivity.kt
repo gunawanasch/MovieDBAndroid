@@ -1,4 +1,4 @@
-package com.gunawan.moviedb.presentation.ui.movie_detail_reviews
+package com.gunawan.moviedb.presentation.movie_detail_reviews
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,7 +12,7 @@ import com.gunawan.moviedb.R
 import com.gunawan.moviedb.databinding.ActivityMovieDetailReviewsBinding
 import com.gunawan.moviedb.domain.entities.AuthorReviewDetails
 import com.gunawan.moviedb.domain.entities.ResultMovieReviewsItem
-import com.gunawan.moviedb.presentation.ui.movie_detail.MovieReviewsAdapter
+import com.gunawan.moviedb.presentation.movie_detail.MovieReviewsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

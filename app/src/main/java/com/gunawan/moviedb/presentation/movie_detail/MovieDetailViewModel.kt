@@ -1,4 +1,4 @@
-package com.gunawan.moviedb.presentation.ui.movie_detail
+package com.gunawan.moviedb.presentation.movie_detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

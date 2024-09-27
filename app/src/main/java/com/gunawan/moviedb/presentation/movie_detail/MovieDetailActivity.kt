@@ -1,4 +1,4 @@
-package com.gunawan.moviedb.presentation.ui.movie_detail
+package com.gunawan.moviedb.presentation.movie_detail
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,7 +21,7 @@ import com.gunawan.moviedb.domain.entities.ResultMovieReviewsItem
 import com.gunawan.moviedb.domain.entities.ResultMovieVideosItem
 import com.gunawan.moviedb.core.Constants.Companion.BASE_IMAGE_URL
 import com.gunawan.moviedb.core.Constants.Companion.BASE_YOUTUBE_URL
-import com.gunawan.moviedb.presentation.ui.movie_detail_reviews.MovieDetailReviewsActivity
+import com.gunawan.moviedb.presentation.movie_detail_reviews.MovieDetailReviewsActivity
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
