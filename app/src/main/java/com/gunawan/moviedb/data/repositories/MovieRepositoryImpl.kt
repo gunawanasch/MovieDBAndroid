@@ -34,9 +34,9 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getMovieGenres(): Flow<NetworkResponseState<MovieGenresEntity>> =
         flow {
             emit(NetworkResponseState.Loading)
-            when(val response = remoteDataSource.getMovieGenres()) {
+            when (val response = remoteDataSource.getMovieGenres()) {
+                NetworkResponseState.Loading -> Unit
                 is NetworkResponseState.Error -> emit(response)
-                NetworkResponseState.Loading->Unit
                 is NetworkResponseState.Success -> emit(
                     NetworkResponseState.Success(
                         movieGenresMapper.mapToEntity(
@@ -50,9 +50,9 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getMovie(genreId: Int, page: Int): Flow<NetworkResponseState<MovieEntity>> =
         flow {
             emit(NetworkResponseState.Loading)
-            when(val response = remoteDataSource.getMovie(genreId, page)) {
+            when (val response = remoteDataSource.getMovie(genreId, page)) {
+                NetworkResponseState.Loading -> Unit
                 is NetworkResponseState.Error -> emit(response)
-                NetworkResponseState.Loading->Unit
                 is NetworkResponseState.Success -> emit(
                     NetworkResponseState.Success(
                         movieMapper.mapToEntity(
@@ -66,9 +66,9 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getMovieDetail(movieId: Int): Flow<NetworkResponseState<MovieDetailEntity>> {
         return flow {
             emit(NetworkResponseState.Loading)
-            when(val response = remoteDataSource.getMovieDetail(movieId)) {
+            when (val response = remoteDataSource.getMovieDetail(movieId)) {
+                NetworkResponseState.Loading -> Unit
                 is NetworkResponseState.Error -> emit(response)
-                NetworkResponseState.Loading->Unit
                 is NetworkResponseState.Success -> emit(
                     NetworkResponseState.Success(
                         movieDetailMapper.mapToEntity(
@@ -86,9 +86,9 @@ class MovieRepositoryImpl @Inject constructor(
     ): Flow<NetworkResponseState<MovieDetailReviewsEntity>> =
         flow {
             emit(NetworkResponseState.Loading)
-            when(val response = remoteDataSource.getMovieDetailReviews(movieId, page)) {
+            when (val response = remoteDataSource.getMovieDetailReviews(movieId, page)) {
+                NetworkResponseState.Loading -> Unit
                 is NetworkResponseState.Error -> emit(response)
-                NetworkResponseState.Loading->Unit
                 is NetworkResponseState.Success -> emit(
                     NetworkResponseState.Success(
                         movieDetailReviewsMapper.mapToEntity(
